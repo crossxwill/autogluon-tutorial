@@ -1,13 +1,7 @@
 # %%
 from autogluon.tabular import TabularDataset, TabularPredictor
-from autogluon.core.models import AbstractModel
-from autogluon.tabular.configs.hyperparameter_configs import get_hyperparameter_config
-
-import statsmodels.api as sm
-import numpy as np
-
-from sklearnex import patch_sklearn
-patch_sklearn()
+# from autogluon.core.models import AbstractModel
+# from autogluon.tabular.configs.hyperparameter_configs import get_hyperparameter_config
 
 label = 'signature'
 
@@ -17,7 +11,6 @@ train_data = TabularDataset(f'{data_url}train.csv')
 test_data = TabularDataset(f'{data_url}test.csv')
 
 train_data.head()
-
 
 # %%
 custom_preset = {'auto_stack': False, 'dynamic_stacking': False,
@@ -36,6 +29,5 @@ y_pred = predictor.predict_proba(test_data.drop(columns=[label]))
 y_pred.head()
 
 # predictor.evaluate(test_data, silent=True)
-
 
 # %%
