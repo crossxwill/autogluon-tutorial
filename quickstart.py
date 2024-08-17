@@ -17,28 +17,40 @@ test_data = TabularDataset(f'{data_url}test.csv')
 train_data.head()
 
 # %%
-custom_hyperparameters = get_hyperparameter_config('zeroshot')
-custom_hyperparameters['GBM'] = [{'objective':'multiclass', 'boosting_type':'dart', 'num_boost_round':5000}]
-custom_hyperparameters['CAT'] = [{'loss_function':'Logloss', 'iterations':5000}]
-custom_hyperparameters['RF'] = [{'criterion': 'log_loss', 'n_estimators':5000,'ag_args': {'name_suffix': 'LogLoss', 'problem_types': ['multiclass']}}]
-custom_hyperparameters['XT'] = [{'criterion': 'log_loss', 'n_estimators':5000,'ag_args': {'name_suffix': 'LogLoss', 'problem_types': ['multiclass']}}]
-custom_hyperparameters['LR'] = [{'multi_class':'multinomial', 'penalty':None, 'tol':1e-6, 'max_iter':10000}]
+custom_hyperparameters = get_hyperparameter_config('light')
+# custom_hyperparameters['GBM'] = [{'objective':'multiclass', 'boosting_type':'dart', 'n_estimators':5000}]
+# custom_hyperparameters['CAT'] = [{'loss_function':'Logloss', 'iterations':5000}]
+# custom_hyperparameters['RF'] = [{'criterion': 'log_loss', 'n_estimators':5000,'ag_args': {'name_suffix': 'LogLoss', 'problem_types': ['multiclass']}}]
+# custom_hyperparameters['XT'] = [{'criterion': 'log_loss', 'n_estimators':5000,'ag_args': {'name_suffix': 'LogLoss', 'problem_types': ['multiclass']}}]
+custom_hyperparameters['LR'] = [
+    {'multi_class':'multinomial', 'penalty':None, 'tol':1e-6, 'max_iter':10000,
+        'ag_args': {'name_suffix': 'Base'}},
+    {'multi_class':'multinomial', 'penalty':'l2', 'tol':1e-6, 'max_iter':10000, 'C':0.5,
+        'ag_args': {'name_suffix': 'Ridge'}},
+    {'multi_class':'multinomial', 'penalty':'l1', 'tol':1e-6, 'max_iter':10000, 'C':0.5,
+        'ag_args': {'name_suffix': 'Lasso'}},
+    {'multi_class':'multinomial', 'penalty':'elasticnet', 'tol':1e-6, 'max_iter':10000, 'C':0.5,
+        'ag_args': {'name_suffix': 'ElasticNet'}}
+    ]
 
 custom_preset = {'auto_stack': False, 'dynamic_stacking': False,
-                'hyperparameters':custom_hyperparameters, 'refit_full': True,
-                'set_best_to_refit_full': True, 'save_bag_folds': False}
+                'hyperparameters':custom_hyperparameters, 'refit_full': False,
+                'set_best_to_refit_full': False, 'save_bag_folds': False,
+                'num_cpus':6}
 
 # %%
 np.random.seed(2024)
 
 predictor = TabularPredictor(label=label, problem_type='multiclass', eval_metric='log_loss', log_to_file=True)
 
-predictor.fit(train_data, holdout_frac=0.3, presets=custom_preset)
+predictor.fit(train_data, presets=custom_preset, excluded_model_types=['KNN', 'NN_TORCH'])  
 
 # %%
+metrics = ['model', 'score_test', 'score_val', 'eval_metric', 'pred_time_test', 'fit_time']
+
 df_leaders = predictor.leaderboard(test_data)
 
-df_leaders.head(40)
+df_leaders.head(40)[metrics]
 # %%
 y_pred = predictor.predict_proba(test_data.drop(columns=[label]))
 y_pred.head()
