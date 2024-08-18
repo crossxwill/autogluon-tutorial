@@ -17,7 +17,7 @@ test_data = TabularDataset(f'{data_url}test.csv')
 train_data.head()
 
 # %%
-custom_hyperparameters = get_hyperparameter_config('light')
+custom_hyperparameters = get_hyperparameter_config('zeroshot')
 # custom_hyperparameters['GBM'] = [{'objective':'multiclass', 'boosting_type':'dart', 'n_estimators':5000}]
 # custom_hyperparameters['CAT'] = [{'loss_function':'Logloss', 'iterations':5000}]
 # custom_hyperparameters['RF'] = [{'criterion': 'log_loss', 'n_estimators':5000,'ag_args': {'name_suffix': 'LogLoss', 'problem_types': ['multiclass']}}]
@@ -35,8 +35,7 @@ custom_hyperparameters['LR'] = [
 
 custom_preset = {'auto_stack': False, 'dynamic_stacking': False,
                 'hyperparameters':custom_hyperparameters, 'refit_full': False,
-                'set_best_to_refit_full': False, 'save_bag_folds': False,
-                'num_cpus':6}
+                'set_best_to_refit_full': False, 'save_bag_folds': False}
 
 # %%
 np.random.seed(2024)
