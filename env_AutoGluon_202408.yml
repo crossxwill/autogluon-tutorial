@@ -1,5 +1,6 @@
 name: env_AutoGluon_202408
 channels:
+  - conda-forge
   - defaults
 dependencies:
   - bzip2=1.0.8=h2bbff1b_6
