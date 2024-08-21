@@ -17,11 +17,7 @@ test_data = TabularDataset(f'{data_url}test.csv')
 train_data.head()
 
 # %%
-custom_hyperparameters = get_hyperparameter_config('zeroshot')
-custom_hyperparameters['NN_TORCH'] = [{}]
-custom_hyperparameters['CAT'] = [{}]
-custom_hyperparameters['RF'] = [{'criterion': 'log_loss', 'n_estimators':5000, 'ag_args': {'name_suffix': 'LogLoss'}}]
-custom_hyperparameters['XT'] = [{'criterion': 'log_loss', 'n_estimators':5000, 'ag_args': {'name_suffix': 'LogLoss'}}]
+custom_hyperparameters = get_hyperparameter_config('default')
 
 custom_hyperparameters['LR'] = [
     {'multi_class':'multinomial', 'penalty':None, 'tol':1e-6, 'max_iter':10000,
@@ -62,3 +58,4 @@ y_pred.head()
 # predictor.evaluate(test_data, silent=True)
 
 # %%
+# "AutogluonModels\ag-20240821_072221"
