@@ -8,6 +8,7 @@ from sklearnex import patch_sklearn
 patch_sklearn()
 
 label = 'signature'
+time_limit = 3600 # seconds (1 hour)
 
 data_url = 'https://raw.githubusercontent.com/mli/ag-docs/main/knot_theory/'
 
@@ -31,15 +32,16 @@ custom_hyperparameters['LR'] = [
     ]
 
 custom_preset = {'auto_stack': False, 'dynamic_stacking': False,
-                'hyperparameters':custom_hyperparameters, 'refit_full': False,
-                'set_best_to_refit_full': False, 'save_bag_folds': False}
+                'hyperparameters':custom_hyperparameters, 'refit_full': True,
+                'set_best_to_refit_full': True, 'save_bag_folds': False,
+                'time_limit': time_limit}
 
 # %%
 np.random.seed(2024)
 
 predictor = TabularPredictor(label=label, problem_type='multiclass', eval_metric='log_loss', log_to_file=True)
 
-predictor.fit(train_data, presets=custom_preset, excluded_model_types=['KNN'])  
+predictor.fit(train_data, presets=custom_preset)  
 
 # %%
 metrics = ['model', 'score_test', 'score_val', 'eval_metric', 'pred_time_test', 'fit_time']
@@ -52,7 +54,7 @@ df_leaders.tail(20)[metrics]
 
 
 # %%
-y_pred = predictor.predict_proba(test_data.drop(columns=[label]))
+y_pred = predictor.predict_proba(test_data.drop(columns=[label]), model='CatBoost_FULL')
 y_pred.head()
 
 # predictor.evaluate(test_data, silent=True)
