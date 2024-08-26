@@ -11,7 +11,7 @@ patch_sklearn()
 label = 'signature'
 time_limit = 10*60       # max training time (seconds)
 infer_limit = 1/10000    # prediction seconds per row
-finalModel = 'WeightedEnsemble_L2'
+finalModel = 'CatBoost_BAG_L2'
 
 data_url = 'https://raw.githubusercontent.com/mli/ag-docs/main/knot_theory/'
 
